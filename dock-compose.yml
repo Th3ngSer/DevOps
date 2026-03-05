@@ -1,0 +1,27 @@
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    privileged: true
+    user: root
+    ports:
+      - 8080:8080 # for jenkins web interface
+      - 50000:50000 # for jenkins slave agents (runners)
+    container_name: jenkins-tp01-I4C
+    volumes:
+      - "jenkins_home:/var/jenkins_home" # persist jenkins data
+    links:
+      - "laravel-agent:laravel"
+  laravel-agent:
+    build: ./laravel-agent
+    image: i4c/jenkins-agent:latest
+    container_name: jenkins-laravel-agent-I4C
+    environment:
+      - JENKINS_URL=http://jenkins:8080
+      - JENKINS_AGENT_NAME=laravel-agent-I4C
+      - JENKINS_AGENT_SSH_PUBKEY=AAAAB3NzaC1yc2EAAAADAQABAAACAQDa4f4gFe8/AN7OKBrrJYHHcZJ5KJsk8sTcYMCHG1MUOATCs7hfiIjxMOcQw+tPPuHDKAN1YLlxUsAft8XrZSTvlxnrvdWwGSvfOykw1/ATUNmVAMcjF2M+lEllTYr2TELl+Eeyy4bcicdA+u7IT/95dwVdGpshF+yAs0wstrPqggXa2daSXZNoZIx9KoDI9Hu5gOr0WV45K4g0Zg6BtI6MzLPbXn0JfZ7hui9G5/r9c373awwWSd5EtgiaRyy4PaK690FKU10QoPzdeKJd6//4SKYNPsyE60qbNO/rbpqrcSgYVMRX7IA2D8xVyPH4PIRxQw7027iM4svLgXo9a5PXWz0WySI9TZ6Bd7RJmX5J+CXKxClN+g6K6xkP3+vbTv1Ycz6l9zw2kuz7oSocxHXjQdydN1dXZPmPPaeDg0H1KmECphRy9I+jZOsaPU3ELIpoesz1tiut/FOmIa5+iCNPvvNHfAE5/lON+Oi/+ha7S/oN0IaRFjh+gxgg1JYEdn3OK5+0qpgN18n6nOGvGeJMiaPt/q2bJGmtXqVHjstNQHlrIe57soZZ7nkk+pSYPqVe6fsW3m/1hXjkR07/blHbtET9AdZTBCVaUmD0cdZaWO3CrKHzBB4SxOfrCMuO9b2q6jGtMquVB/wLbeDwCle6ldVJMJLmIWNz3XAPBKjNVw==
+
+    ports:
+      - 2222:22 # for SSH access to the agent
+
+volumes:
+  jenkins_home:
