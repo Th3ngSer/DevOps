@@ -1,0 +1,22 @@
+services:
+  jenkins:
+    build: .
+    container_name: jenkins-devops
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    restart: always
+
+  laravel-agent:
+    build: ./laravel-agent
+    container_name: jenkins-laravel-agent
+    env_file:
+      - .env.docker
+    ports:
+      - "2222:22"
+    restart: always
+
+volumes:
+  jenkins_home:
