@@ -18,6 +18,11 @@ pipeline {
         sh 'composer install --no-interaction --prefer-dist'
       }
     }
+    stage('Prepare env') {
+      steps {
+        sh 'if [ ! -f .env ]; then cp .env.example .env; fi'
+      }
+    }
     stage('App key') {
       steps {
         sh 'php artisan key:generate --force'
@@ -56,7 +61,10 @@ pipeline {
             string(credentialsId: 'telegram-bot-token', variable: 'TG_TOKEN'),
             string(credentialsId: 'telegram-chat-id', variable: 'TG_CHAT')
           ]) {
-            sh "curl -s -X POST https://api.telegram.org/bot${TG_TOKEN}/sendMessage -d chat_id=${TG_CHAT} -d text='Build failed: ${JOB_NAME} #${BUILD_NUMBER} ${BUILD_URL}' >/dev/null"
+            sh '''curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" \
+              -d chat_id=$TG_CHAT \
+              -d text="Build failed: $JOB_NAME #$BUILD_NUMBER $BUILD_URL" \
+              >/dev/null'''
           }
         } catch (err) {
           echo "Telegram notification skipped: ${err}"
