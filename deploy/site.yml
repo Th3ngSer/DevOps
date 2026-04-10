@@ -2,7 +2,7 @@
 - name: Deploy Laravel app
   hosts: web
   vars:
-    deploy_path: "{{ deploy_path | default('/home/lythong/i42026-website') }}"
+    deploy_path: "{{ deploy_path | default('/root/i42026-website') }}"
   tasks:
     - name: Ensure deploy path exists
       file:

@@ -3,8 +3,8 @@ pipeline {
   options { timestamps() }
   environment {
     DEPLOY_HOST = '178.128.93.188'
-    DEPLOY_USER = 'PANG-Lythong'
-    DEPLOY_PATH = '/home/lythong/i42026-website'
+    DEPLOY_USER = 'root'
+    DEPLOY_PATH = '/root/i42026-website'
     EMAIL_TO = 'akainusan555@gmail.com'
   }
   stages {
