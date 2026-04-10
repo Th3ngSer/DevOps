@@ -36,13 +36,13 @@ pipeline {
     }
     stage('Deploy') {
       steps {
-        withCredentials([sshUserPrivateKey(credentialsId: 'deploy-key', keyFileVariable: 'DEPLOY_KEY', usernameVariable: 'DEPLOY_USER_CRED')]) {
+        withCredentials([sshUserPrivateKey(credentialsId: 'deploy-key', keyFileVariable: 'DEPLOY_KEY')]) {
           withEnv(['ANSIBLE_HOST_KEY_CHECKING=False']) {
             sh '''
               printf "[web]\n%s\n" "$DEPLOY_HOST" > deploy/inventory.ini
               ansible-playbook -i deploy/inventory.ini deploy/site.yml \
                 --private-key "$DEPLOY_KEY" \
-                -u "$DEPLOY_USER_CRED" \
+                -u "$DEPLOY_USER" \
                 --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no' deploy_path=$DEPLOY_PATH"
             '''
           }
