@@ -1,24 +1,38 @@
 pipeline {
-    agent {
-        docker {
-            // Use a specific Java version that matches your project
-            image 'maven:3.9.6-eclipse-temurin-21'  // Java 21 LTS
-            args '-v $HOME/.m2:/root/.m2'
-        }
+    agent any
+    
+    tools {
+        maven 'Maven3'
+        jdk 'JDK17'  // If you have JDK configured in Jenkins
     }
+    
     stages {
+        stage('Fix Java Version') {
+            steps {
+                sh '''
+                    # Override Java version in pom.xml
+                    sed -i 's/25/17/g' pom.xml
+                '''
+            }
+        }
+        
         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                sh 'mvn clean install -Dmaven.compiler.release=17'
             }
         }
     }
+    
     post {
+        success {
+            echo 'Build successful!'
+        }
         failure {
-            emailext(
+            echo 'Build failed!'
+            emailext (
                 to: 'akainusan555@gmail.com',
-                subject: "Build failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-                body: "Build failed. Check console output."
+                subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+                body: "Check the build logs at ${env.BUILD_URL}"
             )
         }
     }
