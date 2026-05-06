@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'DevOps_Exam', url: 'https://github.com/yourusername/your-private-repo.git                '
+                git branch: 'DevOps_Exam', url: 'https://github.com/Th3ngSer/DevOps.git'
             }
         }
         stage('Build') {
