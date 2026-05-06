@@ -1,0 +1,25 @@
+pipeline {
+    agent {
+        docker {
+            // Use a specific Java version that matches your project
+            image 'maven:3.9.6-eclipse-temurin-21'  // Java 21 LTS
+            args '-v $HOME/.m2:/root/.m2'
+        }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+    }
+    post {
+        failure {
+            emailext(
+                to: 'akainusan555@gmail.com',
+                subject: "Build failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+                body: "Build failed. Check console output."
+            )
+        }
+    }
+}
