@@ -3,22 +3,13 @@ pipeline {
     
     tools {
         maven 'Maven3'
-        jdk 'JDK25'  // If you have JDK configured in Jenkins
+        jdk 'JDK25'
     }
     
     stages {
-        stage('Fix Java Version') {
-            steps {
-                sh '''
-                    # Override Java version in pom.xml
-                    sed -i 's/25/17/g' pom.xml
-                '''
-            }
-        }
-        
         stage('Build') {
             steps {
-                sh 'mvn clean install -Dmaven.compiler.release=17'
+                sh 'mvn clean install'
             }
         }
     }
