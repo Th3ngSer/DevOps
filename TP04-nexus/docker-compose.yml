@@ -1,0 +1,12 @@
+services:
+  nexus:
+    image: sonatype/nexus3:3.91.1
+    container_name: "nexus-i4-2026"
+    ports: [ "8081:8081" ]
+    volumes:
+      - nexus-data:/nexus-data
+    environment:
+      - INSTALL4J_ADD_VM_PARAMS=-Xms1200m -Xmx1200m -XX:MaxDirectMemorySize=1200m
+
+volumes:
+  nexus-data:
